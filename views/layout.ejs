@@ -16,17 +16,79 @@
 </head>
 <body>
 <div id="page">
+
     <header class="main" id="mainHeader">
+
+        <div class="right">
+            <% if (!session.user) { %>
+                <a href="/users/new">Registrarse</a>
+                <a href="/session">Login</a>
+            <% } else { %>
+                <a href="/users/<%= session.user.id %>"><%= session.user.username %></a>
+                <a href="/session?_method=DELETE">Logout</a>
+            <% } %>
+        </div>
+
         <h1>Quiz<span class="no-narrow">: el juego de las preguntas</span></h1>
     </header>
 
     <nav class="main" id="mainNav" role="navigation">
         <a href="/">Inicio</a>
+        <a href="/quizzes">Preguntas</a>
+        <% if (session.user) { %>
+            <a href="/users/<%= session.user.id %>/quizzes">Mis Preguntas</a>
+        <% } %>
+        <% if (session.user) { %>
+            <a href="/users/<%= session.user.id %>/favourites">Mis Favoritos</a>
+        <% } %>
         <a href="/author">Créditos</a>
+        <% if (session.user) { %>
+           <a href="/users">Usuarios</a>
+        <% } %>
+		<a href="/help">Ayuda</a>
+		
     </nav>
 
     <section class="main" id="mainSection">
-            <%- body %>
+
+        <% if (messages.info) { %>
+        <article id='flashinfo'>
+            <h3>Información de interés:</h3>
+            <ul>
+                <% for (var i in messages.info) { %>
+                <li> <%= messages.info[i] %> </li>
+                <% } %>
+            </ul>
+        </article>
+        <% } %>
+
+        <% if (messages.success) { %>
+        <article id='flashsuccess'>
+            <h3>Tareas completadas con éxito:</h3>
+            <ul>
+                <% for (var i in messages.success) { %>
+                <li> <%= messages.success[i] %> </li>
+                <% } %>
+            </ul>
+        </article>
+        <% } %>
+
+        <% if (messages.error) { %>
+        <article id='flasherror'>
+            <h3>Errores encontrados:</h3>
+            <ul>
+                <% for (var i in messages.error) { %>
+                <li> <%= messages.error[i] %> </li>
+                <% } %>
+            </ul>
+        </article>
+        <% } %>
+
+        <%- body %>
+
+        <% if (locals.paginate_control) { %>
+        <%- paginate_control %>
+        <% } %>
     </section>
 
     <footer class="main" id="mainFooter">
